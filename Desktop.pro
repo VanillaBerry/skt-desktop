@@ -14,9 +14,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    app_database.cpp
+    app_database.cpp \
+    img_edit/img_effects.cpp
 
 HEADERS  += mainwindow.h \
-    app_database.h
+    app_database.h \
+    img_edit/img_effects.h
 
 FORMS    += mainwindow.ui
