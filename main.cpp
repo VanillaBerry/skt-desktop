@@ -11,21 +11,27 @@ int main(int argc, char *argv[])
 
 
      QLabel lbl;
-//   lbl.setPixmap(QPixmap("./bitmaps/diana.bmp"));
+//   lbl.setPixmap(QPixmap("./bitmaps/nlo.bmp"));
 //   lbl.show();
 
 //   QImage * img=new QImage("E:/GitHub/Repositories/skt-desktop/bitmaps/geometriche.bmp");
 //   QImage * img=new QImage("../skt-desktop/bitmaps/geometriche.bmp");
 
      QImage img_orig, img_rgb32, img_gray, img_trns;
-     img_orig.load("../skt-desktop/bitmaps/diana.bmp");
+     img_orig.load("../skt-desktop/bitmaps/list.bmp");
 
      img_rgb32=img_orig.convertToFormat(QImage::Format_RGB32, Qt::AutoColor);
 //     toGray(img_orig);
 
 //     GrayBlur(img_orig);
-     GrayDivision(img_orig, 5);
+//     GrayDivision(img_orig, 1);
+//     CounterClockwiseRotation(img_orig);
 
+
+     LiqudScale(img_orig, 400);
+     ClockwiseRotation(img_orig);
+     LiqudScale(img_orig,600);
+     CounterClockwiseRotation(img_orig);
 
 //    Contrast(img_orig);
 
@@ -36,7 +42,7 @@ int main(int argc, char *argv[])
     lbl.setPixmap(QPixmap::fromImage(img_orig, Qt::AutoColor));
 
     lbl.show();
-    img_orig.save("E:/GitHub/Repositories/skt-desktop/bitmaps/diana4.bmp",0,100);
+    img_orig.save("../skt-desktop/bitmaps/list_liq2.bmp",0,100);
 
     return a.exec();
 }
