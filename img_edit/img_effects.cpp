@@ -22,7 +22,6 @@ bool toGray(QImage &img_orig){
     int aver_value;
     QRgb one_point;
 
-
     for(int i=0; i<h_img; ++i)
     for(int j=0; j<w_img; ++j)
     {
@@ -35,7 +34,6 @@ bool toGray(QImage &img_orig){
 
 return true;
 };
-
 
 void GrayGaussBlur(QImage &img){
     int h_img = img.height();
@@ -227,7 +225,6 @@ void GrayBlur(QImage &img){
 
 };
 
-
 void GrayDivision(QImage &img_to_proc, QImage img_divisor, int intensity){
 
     if (intensity<1) intensity=1;
@@ -327,7 +324,6 @@ int * EnergyChain(QImage img){
 
     intensity_matrix[w_img-1][h_img-1]=0;
 
-
     for(int i=0; i<w_img; ++i)
         chain_matrix[i][0]=intensity_matrix[i][0];
 
@@ -347,7 +343,6 @@ int * EnergyChain(QImage img){
 
         chain_matrix[i][j]=min_sum+intensity_matrix[i][j];
        };
-
 
     int * chain=new int[h_img];
 
@@ -380,8 +375,6 @@ int * EnergyChain(QImage img){
         if ((right<center)and(right<left)) chain[h_img-j-1]=ch-1;
         if ((left<center)and(left<right)) chain[h_img-j-1]=ch+1;
     };
-
-
 
     for(int i=0; i<w_img; ++i)
     {
@@ -435,8 +428,7 @@ int * Chain(QImage img){
         };
 
         chain_matrix[i][j]+=min_sum;
-       }
-
+       };
 
     int * chain=new int[h_img];
 
@@ -470,8 +462,6 @@ int * Chain(QImage img){
         if ((left<center)and(left<right)) chain[h_img-j-1]=ch+1;
     };
 
-
-
     for(int i=0; i<w_img; ++i)
        delete [] chain_matrix[i];
 
@@ -479,7 +469,6 @@ int * Chain(QImage img){
 
     return chain;
 };
-
 
 void ClockwiseRotation(QImage &img_orig){
     int h_img=img_orig.height();
