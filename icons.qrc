@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/clockwise.ico</file>
+        <file>icons/counter.ico</file>
+        <file>icons/h_mirror.ico</file>
+        <file>icons/v_mirror.ico</file>
+    </qresource>
+</RCC>

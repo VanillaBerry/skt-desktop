@@ -2,6 +2,8 @@
 #include <QApplication>
 #include <QLabel>
 #include "img_edit/img_effects.h"
+#include "image_editor.h"
+#include <QScrollArea>
 
 int main(int argc, char *argv[])
 {
@@ -9,20 +11,18 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-     QLabel lbl;
 
-     QImage img_orig;
-     img_orig.load("../skt-desktop/bitmaps/hokusai.jpg");
+    QImage img_orig;
+    img_orig.load("../skt-desktop/bitmaps/gus.jpg");
 
-     LiqudScale(img_orig,200);
-     CounterClockwiseRotation(img_orig);
-     LiqudScale(img_orig,300);
-     ClockwiseRotation(img_orig);
 
-    lbl.setPixmap(QPixmap::fromImage(img_orig, Qt::AutoColor));
+    image_editor img_edit;
 
-    lbl.show();
-    img_orig.save("../skt-desktop/bitmaps/hokusai_liq.jpg",0,100);
+    img_edit.setImage(img_orig);
+    img_edit.show();
+
+
+    img_orig.save("../skt-desktop/bitmaps/gus_2.jpg",0,100);
 
     return a.exec();
 }

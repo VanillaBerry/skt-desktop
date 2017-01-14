@@ -22,4 +22,6 @@ int DeleteTwoChains(QImage &img_orig);
 void HorizontalMirror(QImage &img_orig);
 void VerticalMirror(QImage &img_orig);
 
+void LiqudScaleWH(QImage &img_orig, int width, int height);
+
 #endif // IMG_EFFECTS_H

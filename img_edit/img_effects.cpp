@@ -480,7 +480,7 @@ void ClockwiseRotation(QImage &img_orig){
     for(int j=0; j<h_img; ++j)
     {
         point=img_orig.pixel(i,j);
-        rotated_img.setPixel(h_img-j,i,point);
+        rotated_img.setPixel(h_img-j-1,i,point);
     };
 
     img_orig=rotated_img;
@@ -497,7 +497,7 @@ void CounterClockwiseRotation(QImage &img_orig){
     for(int j=0; j<h_img; ++j)
     {
         point=img_orig.pixel(i,j);
-        rotated_img.setPixel(j,w_img-i,point);
+        rotated_img.setPixel(j,w_img-i-1,point);
     };
 
     img_orig=rotated_img;
@@ -533,14 +533,15 @@ int DeleteOneChain(QImage &img_orig){
     delete []chain;
     img_orig=new_img;
 
+   return 0;
 };
 
 
 int LiqudScale(QImage &img_orig, int new_width){
     int w_img=img_orig.width();
-    int h_img=img_orig.height();
 
     if (new_width>=w_img) return 1;
+    if (img_orig.height()<3) return 1;
 
     while(img_orig.width()>(new_width+1))
     DeleteTwoChains(img_orig);
@@ -591,8 +592,16 @@ int DeleteTwoChains(QImage &img_orig){
  //   HorizontalMirror(img_orig);
     DeleteOneChain(img_orig);
  //   HorizontalMirror(img_orig);
+    return 0;
 };
 
 int * LessEnergyWay(QImage img){
     return EnergyChain(img);
+};
+
+void LiqudScaleWH(QImage &img_orig, int width, int height){
+    LiqudScale(img_orig, width);
+    ClockwiseRotation(img_orig);
+    LiqudScale(img_orig, height);
+    CounterClockwiseRotation(img_orig);
 };

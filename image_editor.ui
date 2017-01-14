@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>image_editor</class>
+ <widget class="QWidget" name="image_editor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>478</width>
+    <height>354</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="5" column="1" colspan="3">
+    <widget class="QPushButton" name="pushButton_resize">
+     <property name="text">
+      <string>RESIZE</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QPushButton" name="pushButton_reset">
+     <property name="text">
+      <string>DISCARD CHANGES</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1" colspan="3">
+    <widget class="QPushButton" name="pushButton_exit">
+     <property name="text">
+      <string>EXIT</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" colspan="3">
+    <widget class="QPushButton" name="pushButton_save">
+     <property name="text">
+      <string>SAVE</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="3">
+    <widget class="QPushButton" name="pushButton_liquid">
+     <property name="text">
+      <string>LIQUID</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="3">
+    <widget class="QPushButton" name="pushButton_edges">
+     <property name="text">
+      <string>EDGES</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="3">
+    <widget class="QPushButton" name="pushButton_gray">
+     <property name="text">
+      <string>TO GRAY</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="7">
+    <widget class="QScrollArea" name="scrollArea_image">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scroll_widget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>377</width>
+        <height>244</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="3">
+    <widget class="QPushButton" name="pushButton_hmirror">
+     <property name="text">
+      <string>MIRROR</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icons/icons/v_mirror.ico</normaloff>:/icons/icons/v_mirror.ico</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="3">
+    <widget class="QPushButton" name="pushButton_vmirror">
+     <property name="text">
+      <string>MIRROR</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icons/icons/h_mirror.ico</normaloff>:/icons/icons/h_mirror.ico</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QCheckBox" name="checkBox_prev">
+     <property name="text">
+      <string>Previev</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QToolButton" name="toolButton_clockwise">
+     <property name="text">
+      <string>CLOCKWISE</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icons/icons/clockwise.ico</normaloff>:/icons/icons/clockwise.ico</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QToolButton" name="toolButton_counter">
+     <property name="text">
+      <string>COUNTER</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icons/icons/counter.ico</normaloff>:/icons/icons/counter.ico</iconset>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -15,10 +15,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     app_database.cpp \
-    img_edit/img_effects.cpp
+    img_edit/img_effects.cpp \
+    image_editor.cpp
 
 HEADERS  += mainwindow.h \
     app_database.h \
-    img_edit/img_effects.h
+    img_edit/img_effects.h \
+    image_editor.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    image_editor.ui
+
+RESOURCES += \
+    icons.qrc
