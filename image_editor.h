@@ -24,8 +24,13 @@ private:
     Ui::image_editor *ui;
     QImage img_new;
     QImage img_old;
+    QImage img_viev;
     bool prev;
+
     QString str;
+    float scale;
+    int w_pixmap;
+    int h_pixmap;
 
 void refresh();
 
@@ -44,6 +49,8 @@ void handleButton_Resize();
 void handleButton_Liquid();
 void handleButton_autoliq();
 void handleCheck_Prev();
+void handleButton_zoomIN();
+void handleButton_zoomOUT();
 
 
 };

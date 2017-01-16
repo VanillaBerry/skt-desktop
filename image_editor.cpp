@@ -12,8 +12,9 @@ image_editor::image_editor(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->scrollArea_image->hide();
+
     prev=true;
-    ui->checkBox_prev->setChecked(true);
+    ui->checkBox_prev->setChecked(prev);
 
     connect(ui->pushButton_gray, SIGNAL (released()), this, SLOT (handleButton_Gray()));
     connect(ui->pushButton_reset, SIGNAL (released()), this, SLOT (handleButton_Reset()));
@@ -27,11 +28,10 @@ image_editor::image_editor(QWidget *parent) :
     connect(ui->pushButton_liquid, SIGNAL (released()), this, SLOT (handleButton_Liquid()));
     connect(ui->pushButton_autoliq, SIGNAL (released()), this, SLOT (handleButton_autoliq()));
     connect(ui->checkBox_prev, SIGNAL (clicked()), this, SLOT (handleCheck_Prev()));
+    connect(ui->pushButton_zoomIN, SIGNAL (released()), this, SLOT (handleButton_zoomIN()));
+    connect(ui->pushButton_zoomOUT, SIGNAL (released()), this, SLOT (handleButton_zoomOUT()));
 
     ui->label_size->hide();
-
-/*    toolButton->setIcon(QPixmap(":/media/instruments-icons/cursor.png"));*/
-
 
 }
 
@@ -44,6 +44,10 @@ image_editor::~image_editor()
 void image_editor::setImage(QImage img_orig){
     img_old=img_orig;
     img_new=img_orig;
+    img_viev=img_orig;
+    scale=1.0;
+    w_pixmap=img_orig.height();
+    h_pixmap=img_orig.width();
 
     imagelabel = new QLabel;
     imagelabel->setPixmap(QPixmap::fromImage(img_new, Qt::AutoColor));
@@ -51,6 +55,7 @@ void image_editor::setImage(QImage img_orig){
     ui->scrollArea_image->setBackgroundRole(QPalette::Dark);
     ui->scrollArea_image->setWidget(imagelabel);
     ui->scrollArea_image->show();
+
 };
 
 void image_editor::handleButton_Gray(){
@@ -60,6 +65,12 @@ void image_editor::handleButton_Gray(){
 
 void image_editor::handleButton_Reset(){
     img_new=img_old;
+    img_viev=img_old;
+
+    w_pixmap=img_viev.width();
+    h_pixmap=img_viev.height();
+
+    scale=1.0;
     refresh();
 };
 
@@ -170,14 +181,26 @@ void image_editor::handleButton_Liquid(){
 
 void image_editor::refresh(){
     if (prev)
-    imagelabel->setPixmap(QPixmap::fromImage(img_new, Qt::AutoColor));
+//    imagelabel->setPixmap(QPixmap::fromImage(img_new, Qt::AutoColor));
+        img_viev=img_new;
     else
-    imagelabel->setPixmap(QPixmap::fromImage(img_old, Qt::AutoColor));
+//    imagelabel->setPixmap(QPixmap::fromImage(img_old, Qt::AutoColor));
 
+
+    img_viev=img_old;
+
+    w_pixmap=scale*img_new.width();
+    h_pixmap=scale*img_old.height();
+
+    img_viev=img_viev.scaled(w_pixmap,h_pixmap);
+
+    imagelabel->setPixmap(QPixmap::fromImage(img_viev, Qt::AutoColor));
     QString str = "Current size is " + QString::number(img_old.width());
     str+="x"+QString::number(img_old.height());
     ui->label_size->setText(str);
     ui->label_size->show();
+
+
 };
 
 void image_editor::handleCheck_Prev(){
@@ -186,11 +209,35 @@ void image_editor::handleCheck_Prev(){
 };
 
 void image_editor::handleButton_autoliq(){
+    int n = QMessageBox::warning(0,
+                                 "WARNING",
+                                 "VZOOH can take up to few minutes."
+                                 "\n Proceed?",
+                                 "Yes",
+                                 "No",
+                                 QString(),
+                                 0,
+                                 1
+                                );
+    if(!n) { /*!!!!!!*/
     AutoDeleteEdges(img_new);
+    }
     refresh();
 };
 
 
 void image_editor::setLocation(QString strng){
      str=strng;
+};
+
+void image_editor::handleButton_zoomIN(){
+    scale*=1.25;
+    if (scale>4) scale=4;
+    refresh();
+};
+
+void image_editor::handleButton_zoomOUT(){
+    scale*=0.8;
+    if (scale<0.5) scale=0.5;
+    refresh();
 };

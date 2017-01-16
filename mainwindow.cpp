@@ -9,7 +9,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    /*    connect(ui->pushButton_gray, SIGNAL (released()), this, SLOT (handleButton_Gray()));*/
 
     connect(ui->pushButton_Exit, SIGNAL (clicked()), this, SLOT (handlebutton_Exit()));
     connect(ui->pushButton_newimg, SIGNAL(released()), this, SLOT (handlebutton_New()));
@@ -25,7 +24,7 @@ void MainWindow::handlebutton_New(){
     QImage img_orig;
     QString str;
 
-    str=QFileDialog::getOpenFileName(0, "Select Image", "..//", "*.jpg *.png, *.bmp");
+    str=QFileDialog::getOpenFileName(0, "Select Image", "..//", "*.jpg *.png *.bmp");
 
     img_orig.load(str);
     img_orig.convertToFormat(QImage::Format_RGB32);
@@ -42,3 +41,4 @@ void MainWindow::handlebutton_New(){
 void MainWindow::handlebutton_Exit(){
     emit MainWindow::closing();
 };
+
