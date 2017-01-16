@@ -4,6 +4,7 @@
 #include "QMessageBox"
 #include "QInputDialog"
 #include "QCheckBox"
+#include "QFileDialog"
 
 image_editor::image_editor(QWidget *parent) :
     QWidget(parent),
@@ -11,7 +12,8 @@ image_editor::image_editor(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->scrollArea_image->hide();
-    prev=false;
+    prev=true;
+    ui->checkBox_prev->setChecked(true);
 
     connect(ui->pushButton_gray, SIGNAL (released()), this, SLOT (handleButton_Gray()));
     connect(ui->pushButton_reset, SIGNAL (released()), this, SLOT (handleButton_Reset()));
@@ -23,9 +25,10 @@ image_editor::image_editor(QWidget *parent) :
     connect(ui->pushButton_save, SIGNAL (released()), this, SLOT (handleButton_Save()));
     connect(ui->pushButton_resize, SIGNAL (released()), this, SLOT (handleButton_Resize()));
     connect(ui->pushButton_liquid, SIGNAL (released()), this, SLOT (handleButton_Liquid()));
-    connect(ui->pushButton_exit, SIGNAL (released()), this, SLOT (handleButton_Exit()));
-
+    connect(ui->pushButton_autoliq, SIGNAL (released()), this, SLOT (handleButton_autoliq()));
     connect(ui->checkBox_prev, SIGNAL (clicked()), this, SLOT (handleCheck_Prev()));
+
+    ui->label_size->hide();
 
 /*    toolButton->setIcon(QPixmap(":/media/instruments-icons/cursor.png"));*/
 
@@ -86,7 +89,28 @@ void image_editor::handleButton_Vmirror(){
 };
 
 void image_editor::handleButton_Save(){
-    img_old=img_new;
+    int n = QMessageBox::warning(0,
+                                 "SAVE",
+                                 "Do you want to overwrite the image?",
+                                 "Yes",
+                                 "No",
+                                 QString(),
+                                 0,
+                                 1
+                                );
+    if(!n) {
+        img_old=img_new;
+        img_new.save(str,0,100);
+    }
+    else
+    {
+        img_old=img_new;
+        QString newstr = QFileDialog::getSaveFileName();
+        img_old.save(newstr,0,100);
+
+    };  /*!!!!!!*/
+
+    refresh();
 };
 
 void image_editor::handleButton_Resize(){
@@ -149,6 +173,11 @@ void image_editor::refresh(){
     imagelabel->setPixmap(QPixmap::fromImage(img_new, Qt::AutoColor));
     else
     imagelabel->setPixmap(QPixmap::fromImage(img_old, Qt::AutoColor));
+
+    QString str = "Current size is " + QString::number(img_old.width());
+    str+="x"+QString::number(img_old.height());
+    ui->label_size->setText(str);
+    ui->label_size->show();
 };
 
 void image_editor::handleCheck_Prev(){
@@ -156,6 +185,12 @@ void image_editor::handleCheck_Prev(){
     refresh();
 };
 
-void image_editor::handleButton_Exit(){
+void image_editor::handleButton_autoliq(){
+    AutoDeleteEdges(img_new);
+    refresh();
+};
 
+
+void image_editor::setLocation(QString strng){
+     str=strng;
 };
