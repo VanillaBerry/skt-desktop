@@ -344,9 +344,10 @@ int * EnergyChain(QImage img){
         chain_matrix[i][j]=min_sum+intensity_matrix[i][j];
        };
 
-    int * chain=new int[h_img];
+    int * chain=new int[h_img+2]; //лишние элементы это информация об энергии цепочки
 
     int min_elem=chain_matrix[0][h_img-1];
+    int max_elem=min_elem;
     int elem;
     chain[h_img-1]=0;
 
@@ -359,7 +360,15 @@ int * EnergyChain(QImage img){
             min_elem=elem;
             chain[h_img-1]=i;
         };
+
+        if (elem>max_elem)
+        {
+            max_elem=elem;
+        };
     };
+
+    chain[h_img]=min_elem;
+    chain[h_img+1]=max_elem;
 
     int center, left, ch;
 
@@ -375,6 +384,7 @@ int * EnergyChain(QImage img){
         if ((right<center)and(right<left)) chain[h_img-j-1]=ch-1;
         if ((left<center)and(left<right)) chain[h_img-j-1]=ch+1;
     };
+
 
     for(int i=0; i<w_img; ++i)
     {
@@ -395,80 +405,6 @@ void GrayDivision(QImage &img_to_proc, int intensity){
     GrayDivision(img_to_proc,img_divisor,intensity);
 };
 
-int * Chain(QImage img){
-
-    int w_img=img.width();
-    int h_img=img.height();
-
-    if (w_img<10) return NULL;
-    if (h_img<10) return NULL;
-
-    QImage img_copy=img;
-    GrayDivision(img_copy, 5);
-
-    int **chain_matrix = new int*[w_img];
-    for(int i=0; i<w_img; ++i)
-        chain_matrix[i]=new int[h_img];
-
-    for(int i=0; i<w_img; ++i)
-        chain_matrix[i][0]=Gray_from_RGB(img_copy.pixel(i,0));
-
-    int min_sum;
-
-    for(int j=1; j<h_img; ++j)
-    for(int i=0; i<w_img; ++i)
-        {
-        if (i==0) min_sum=qMin(chain_matrix[i][j-1], chain_matrix[i+1][j-1]);
-        if (i==(w_img-1)) min_sum=qMin(chain_matrix[i][j-1], chain_matrix[i-1][j-1]);
-
-        if ((i>0)and(i<(w_img-1)))
-        {
-            min_sum=qMin(chain_matrix[i-1][j-1],chain_matrix[i][j-1]);
-            min_sum=qMin(chain_matrix[i+1][j-1], min_sum);
-        };
-
-        chain_matrix[i][j]+=min_sum;
-       };
-
-    int * chain=new int[h_img];
-
-    int min_elem=chain_matrix[0][h_img-1];
-    int elem;
-    chain[h_img-1]=0;
-
-    for(int i=1; i<w_img; ++i)
-    {
-        elem=chain_matrix[i][h_img-1];
-
-        if (elem<min_elem)
-        {
-            min_elem=elem;
-            chain[h_img-1]=i;
-        };
-    };
-
-    int right, center, left, ch;
-
-    for(int j=1; j<h_img; ++j)
-    {
-        ch=chain[h_img-j];
-        if (ch>0)  right=chain_matrix[ch-1][h_img-j-1]; else right=2000000000;
-        center=chain_matrix[ch][h_img-j-1];
-        if (ch<w_img-1) left=chain_matrix[ch+1][h_img-j-1]; else left=2000000000;
-
-        chain[h_img-j-1]=ch;
-
-        if ((right<center)and(right<left)) chain[h_img-j-1]=ch-1;
-        if ((left<center)and(left<right)) chain[h_img-j-1]=ch+1;
-    };
-
-    for(int i=0; i<w_img; ++i)
-       delete [] chain_matrix[i];
-
-    delete [] chain_matrix;
-
-    return chain;
-};
 
 void ClockwiseRotation(QImage &img_orig){
     int h_img=img_orig.height();
@@ -503,8 +439,13 @@ void CounterClockwiseRotation(QImage &img_orig){
     img_orig=rotated_img;
 };
 
-
 int DeleteOneChain(QImage &img_orig){
+    int x,y;
+    DeleteOneChain(img_orig, x, y);
+    return 0;
+};
+
+int DeleteOneChain(QImage &img_orig, int &min, int &max){
     int w_img=img_orig.width();
     int h_img=img_orig.height();
 
@@ -530,10 +471,14 @@ int DeleteOneChain(QImage &img_orig){
         };
     };
 
+
+    min=chain[h_img];
+    max=chain[h_img+1];
+
     delete []chain;
     img_orig=new_img;
 
-   return 0;
+    return 0;
 };
 
 
@@ -543,10 +488,8 @@ int LiqudScale(QImage &img_orig, int new_width){
     if (new_width>=w_img) return 1;
     if (img_orig.height()<3) return 1;
 
-    while(img_orig.width()>(new_width+1))
-    DeleteTwoChains(img_orig);
-
-    if (img_orig.width()>new_width) DeleteOneChain(img_orig);
+    while(img_orig.width()>(new_width))
+    DeleteOneChain(img_orig);
 
     return 0;
 };
@@ -587,13 +530,6 @@ void VerticalMirror(QImage &img_orig){
 
 };
 
-int DeleteTwoChains(QImage &img_orig){
-    DeleteOneChain(img_orig);
- //   HorizontalMirror(img_orig);
-    DeleteOneChain(img_orig);
- //   HorizontalMirror(img_orig);
-    return 0;
-};
 
 int * LessEnergyWay(QImage img){
     return EnergyChain(img);
@@ -604,4 +540,46 @@ void LiqudScaleWH(QImage &img_orig, int width, int height){
     ClockwiseRotation(img_orig);
     LiqudScale(img_orig, height);
     CounterClockwiseRotation(img_orig);
+};
+
+
+int AutoDeleteEdges(QImage &img_orig){
+
+    int w_img=img_orig.width();
+    int h_img=img_orig.height();
+    int iterations=0;
+    int its_max=w_img/2;
+
+    if (w_img<10) return 10;
+    if (h_img<10) return 10;
+
+    int min, max;
+    DeleteOneChain(img_orig, min, max);
+    int coeff=min+(max-min)*0.8;
+    int curr=coeff;
+
+    while((curr<=coeff)and(iterations<its_max))
+    {
+        DeleteOneChain(img_orig, curr, max);
+        iterations+=1;
+    };
+
+    ClockwiseRotation(img_orig);
+
+    DeleteOneChain(img_orig, min, max);
+    coeff=min+(max-min)*0.8;
+    curr=coeff;
+
+    its_max=h_img/2;
+    iterations=0;
+
+    while((curr<=coeff)and(iterations<its_max))
+    {
+        DeleteOneChain(img_orig, curr, max);
+        iterations+=1;
+    };
+
+    CounterClockwiseRotation(img_orig);
+
+    return 0;
 };

@@ -5,16 +5,20 @@
 
 class app_database
 {
-    public:
-
+public:
     app_database();
+    QSqlError databaseInit();
+
+
+
 
 
 /*    app_db_create();
     app_db_use();*/
 
-
-
+private:
+void setStorageFile(QString str);
+QString StorageFilename;
 
 };
 

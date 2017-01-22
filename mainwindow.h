@@ -17,6 +17,14 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+private slots:
+
+    void handlebutton_New();
+    void handlebutton_Exit();
+
+public: signals:
+void closing();
 };
 
 #endif // MAINWINDOW_H

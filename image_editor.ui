@@ -6,64 +6,115 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>478</width>
-    <height>354</height>
+    <width>490</width>
+    <height>309</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="5" column="1" colspan="3">
+   <item row="8" column="5" colspan="2">
+    <widget class="QPushButton" name="pushButton_reset">
+     <property name="text">
+      <string>RESET</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="5" colspan="2">
+    <widget class="QPushButton" name="pushButton_gray">
+     <property name="text">
+      <string>TO GRAY</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icons/icons/convert_color_to_gray.ico</normaloff>:/icons/icons/convert_color_to_gray.ico</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="5" colspan="2">
     <widget class="QPushButton" name="pushButton_resize">
      <property name="text">
       <string>RESIZE</string>
      </property>
     </widget>
    </item>
+   <item row="8" column="1">
+    <widget class="QLabel" name="label_size">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="5">
+    <widget class="QPushButton" name="pushButton_hmirror">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icons/icons/v_mirror.ico</normaloff>:/icons/icons/v_mirror.ico</iconset>
+     </property>
+    </widget>
+   </item>
    <item row="8" column="0">
-    <widget class="QPushButton" name="pushButton_reset">
+    <widget class="QCheckBox" name="checkBox_prev">
      <property name="text">
-      <string>DISCARD CHANGES</string>
+      <string>Previev</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="1" colspan="3">
-    <widget class="QPushButton" name="pushButton_exit">
-     <property name="text">
-      <string>EXIT</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1" colspan="3">
-    <widget class="QPushButton" name="pushButton_save">
-     <property name="text">
-      <string>SAVE</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1" colspan="3">
-    <widget class="QPushButton" name="pushButton_liquid">
-     <property name="text">
-      <string>LIQUID</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="3">
+   <item row="1" column="5" colspan="2">
     <widget class="QPushButton" name="pushButton_edges">
      <property name="text">
       <string>EDGES</string>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="1" colspan="3">
-    <widget class="QPushButton" name="pushButton_gray">
-     <property name="text">
-      <string>TO GRAY</string>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icons/icons/Contrast.ico</normaloff>:/icons/icons/Contrast.ico</iconset>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="7">
+   <item row="8" column="3">
+    <widget class="QPushButton" name="pushButton_zoomOUT">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icons/icons/magnifier--minus.ico</normaloff>:/icons/icons/magnifier--minus.ico</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="6">
+    <widget class="QPushButton" name="pushButton_vmirror">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icons/icons/h_mirror.ico</normaloff>:/icons/icons/h_mirror.ico</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="5">
+    <widget class="QToolButton" name="toolButton_counter">
+     <property name="text">
+      <string>COUNTER</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/icons/icons/counter.ico</normaloff>:/icons/icons/counter.ico</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>16</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="8" colspan="5">
     <widget class="QScrollArea" name="scrollArea_image">
      <property name="widgetResizable">
       <bool>true</bool>
@@ -73,43 +124,49 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>377</width>
-        <height>244</height>
+        <width>380</width>
+        <height>259</height>
        </rect>
       </property>
      </widget>
     </widget>
    </item>
-   <item row="3" column="1" colspan="3">
-    <widget class="QPushButton" name="pushButton_hmirror">
+   <item row="8" column="4">
+    <widget class="QPushButton" name="pushButton_autoliq">
      <property name="text">
-      <string>MIRROR</string>
+      <string>VZHOOH</string>
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/icons/icons/v_mirror.ico</normaloff>:/icons/icons/v_mirror.ico</iconset>
+       <normaloff>:/icons/icons/_0020_Magic-Wand.ico</normaloff>:/icons/icons/_0020_Magic-Wand.ico</iconset>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="3">
-    <widget class="QPushButton" name="pushButton_vmirror">
+   <item row="8" column="2">
+    <widget class="QPushButton" name="pushButton_zoomIN">
      <property name="text">
-      <string>MIRROR</string>
+      <string/>
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/icons/icons/h_mirror.ico</normaloff>:/icons/icons/h_mirror.ico</iconset>
+       <normaloff>:/icons/icons/magnifier--plus.ico</normaloff>:/icons/icons/magnifier--plus.ico</iconset>
      </property>
     </widget>
    </item>
-   <item row="7" column="0">
-    <widget class="QCheckBox" name="checkBox_prev">
-     <property name="text">
-      <string>Previev</string>
+   <item row="6" column="5" colspan="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-    </widget>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>53</height>
+      </size>
+     </property>
+    </spacer>
    </item>
-   <item row="2" column="3">
+   <item row="2" column="6">
     <widget class="QToolButton" name="toolButton_clockwise">
      <property name="text">
       <string>CLOCKWISE</string>
@@ -118,16 +175,25 @@
       <iconset resource="icons.qrc">
        <normaloff>:/icons/icons/clockwise.ico</normaloff>:/icons/icons/clockwise.ico</iconset>
      </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>16</height>
+      </size>
+     </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QToolButton" name="toolButton_counter">
+   <item row="7" column="5" colspan="2">
+    <widget class="QPushButton" name="pushButton_save">
      <property name="text">
-      <string>COUNTER</string>
+      <string>SAVE AS</string>
      </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/icons/icons/counter.ico</normaloff>:/icons/icons/counter.ico</iconset>
+    </widget>
+   </item>
+   <item row="5" column="5" colspan="2">
+    <widget class="QPushButton" name="pushButton_liquid">
+     <property name="text">
+      <string>LIQUID</string>
      </property>
     </widget>
    </item>

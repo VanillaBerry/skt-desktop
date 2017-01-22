@@ -4,5 +4,11 @@
         <file>icons/counter.ico</file>
         <file>icons/h_mirror.ico</file>
         <file>icons/v_mirror.ico</file>
+        <file>icons/Martin-Berube-Flat-Animal-Crab.ico</file>
+        <file>icons/magnifier--minus.ico</file>
+        <file>icons/magnifier--plus.ico</file>
+        <file>icons/_0020_Magic-Wand.ico</file>
+        <file>icons/Contrast.ico</file>
+        <file>icons/convert_color_to_gray.ico</file>
     </qresource>
 </RCC>
