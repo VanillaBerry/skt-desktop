@@ -32,10 +32,7 @@ image_editor::image_editor(QWidget *parent) :
     connect(ui->pushButton_zoomOUT, SIGNAL (released()), this, SLOT (handleButton_zoomOUT()));
 
     ui->label_size->hide();
-<<<<<<< HEAD
     this->setWindowTitle("CRAB EDITOR");
-=======
->>>>>>> a1b85349746472ad9f4c5f6a96184b6531fc5e8d
 
 }
 
