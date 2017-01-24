@@ -1,0 +1,53 @@
+/*
+void MainWindow::closeEvent(QCloseEvent *event) {
+    if ( какое-то условие ) {
+        ...                           //что-то делаем
+        event->accept();   //подтверждаем событие - добросовестно закрываем приложение
+    } else {
+        ...                           //что-то делаем
+        event->ignore();   //игнорируем событие
+    }
+}*/
+
+
+/*{
+        treeView = new QTreeView(this);
+        setCentralWidget(treeView);
+        standardModel = new QStandardItemModel ;
+        QStandardItem *rootNode = standardModel->invisibleRootItem();
+
+        //defining a couple of items
+        QStandardItem *americaItem = new QStandardItem("America");
+        QStandardItem *mexicoItem =  new QStandardItem("Canada");
+        QStandardItem *usaItem =     new QStandardItem("USA");
+        QStandardItem *bostonItem =  new QStandardItem("Boston");
+        QStandardItem *europeItem =  new QStandardItem("Europe");
+        QStandardItem *italyItem =   new QStandardItem("Italy");
+        QStandardItem *romeItem =    new QStandardItem("Rome");
+        QStandardItem *veronaItem =  new QStandardItem("Verona");
+
+        //building up the hierarchy
+        rootNode->    appendRow(americaItem);
+        rootNode->    appendRow(europeItem);
+        americaItem-> appendRow(mexicoItem);
+        americaItem-> appendRow(usaItem);
+        usaItem->     appendRow(bostonItem);
+        europeItem->  appendRow(italyItem);
+        italyItem->   appendRow(romeItem);
+        italyItem->   appendRow(veronaItem);
+
+        //register the model
+        treeView->setModel(standardModel);
+        treeView->expandAll();
+
+        //selection changes shall trigger a slot
+        QItemSelectionModel *selectionModel= treeView->selectionModel();
+        connect(selectionModel, SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
+                this, SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
+    }*/
+
+        //Шаблон:connect(sender, &Sender::valueChanged,  receiver, &Receiver::updateValue);
+// QObject::connect(&w, SIGNAL(closing()), &a, SLOT (quit()));
+
+
+// QTreeView * treeView = new QTreeView(ui->scrollArea_tree);

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql printsupport
+QT       += core gui sql printsupport qml quick widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -28,3 +28,6 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     icons.qrc
+
+DISTFILES += \
+    notepad

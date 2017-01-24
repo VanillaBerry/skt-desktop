@@ -5,6 +5,7 @@
 #include "QInputDialog"
 #include "QCheckBox"
 #include "QFileDialog"
+#include <QCloseEvent>
 
 image_editor::image_editor(QWidget *parent) :
     QWidget(parent),
@@ -39,6 +40,7 @@ image_editor::image_editor(QWidget *parent) :
 
 image_editor::~image_editor()
 {
+    emit EditorIsClosed();
     delete ui;
 }
 
@@ -181,23 +183,33 @@ void image_editor::handleButton_Liquid(){
 };
 
 void image_editor::refresh(){
+    QString str;
+
     if (prev)
-//    imagelabel->setPixmap(QPixmap::fromImage(img_new, Qt::AutoColor));
+    {
         img_viev=img_new;
+        w_pixmap=scale*img_new.width();
+        h_pixmap=scale*img_new.height();
+
+        str = "Current size is " + QString::number(img_new.width());
+        str+="x"+QString::number(img_new.height());
+    }
     else
-//    imagelabel->setPixmap(QPixmap::fromImage(img_old, Qt::AutoColor));
+    {
+         img_viev=img_old;
+         w_pixmap=scale*img_old.width();
+         h_pixmap=scale*img_old.height();
 
+         str = "Current size is " + QString::number(img_old.width());
+         str+="x"+QString::number(img_old.height());
 
-    img_viev=img_old;
+    };
 
-    w_pixmap=scale*img_new.width();
-    h_pixmap=scale*img_old.height();
 
     img_viev=img_viev.scaled(w_pixmap,h_pixmap);
-
     imagelabel->setPixmap(QPixmap::fromImage(img_viev, Qt::AutoColor));
-    QString str = "Current size is " + QString::number(img_old.width());
-    str+="x"+QString::number(img_old.height());
+
+
     ui->label_size->setText(str);
     ui->label_size->show();
 
@@ -241,4 +253,9 @@ void image_editor::handleButton_zoomOUT(){
     scale*=0.8;
     if (scale<0.5) scale=0.5;
     refresh();
+};
+
+void image_editor::closeEvent(QCloseEvent *event) {
+    emit EditorIsClosed();
+    event->accept();
 };

@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 
+
 namespace Ui {
 class image_editor;
 }
@@ -34,6 +35,8 @@ private:
 
 void refresh();
 
+protected:
+void closeEvent(QCloseEvent *event);
 
 private slots:
 
@@ -51,6 +54,9 @@ void handleButton_autoliq();
 void handleCheck_Prev();
 void handleButton_zoomIN();
 void handleButton_zoomOUT();
+
+signals:
+void EditorIsClosed();
 
 
 };

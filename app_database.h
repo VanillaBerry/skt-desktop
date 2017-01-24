@@ -10,6 +10,10 @@ public:
     QSqlError databaseInit();
 
 
+void add_Semester(QString _parent, QString _title, QString _tags="");
+void add_Subject(QString _parent, QString _title, QString _tags="");
+void add_Lecture(QString _parent, QString _title, QString _tags="");
+void add_Page(QString _parent, QString _title, QString _tags="");
 
 
 
@@ -17,8 +21,11 @@ public:
     app_db_use();*/
 
 private:
-void setStorageFile(QString str);
-QString StorageFilename;
+
+    void add_Item();
+
+    void setStorageFile(QString str);
+    QString StorageFilename;
 
 };
 
