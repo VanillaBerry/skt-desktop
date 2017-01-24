@@ -6,6 +6,7 @@
 #include "app_database.h"
 #include <QTreeView>
 #include <QStandardItem>
+#include <QStandardItemModel>
 
 namespace Ui {
 class MainWindow;
@@ -24,23 +25,40 @@ void closeEvent(QCloseEvent *event);
 
 private:
     Ui::MainWindow *ui;
+
+// IMAGE EDITOR
     bool EditorIsOpen;
     image_editor *img_edit;
+
+// TREE + DATABASE
     QTreeView * treeView;
     app_database *app_db;
- //   QStandardItem *rootNode;
+    QStandardItemModel* standardModel;
 
-void InitAppDatabase();
 
 private slots:
 
+// SLOTS FOR BUTTONS
     void handlebutton_New();
     void handlebutton_Exit();
+
+// ONE SLOT TO SENSE WHETHER IMAGE EDITORIS CLOSED
     void handleEditor_Closing();
+
+// SLOTS FOR MENU BUTTONS
     void handleA_database();
+    void handle_addSemester();
+    void handle_addSubject();
+    void handle_addLecture();
+    void handle_addPage();
+
+
 
 public: signals:
+
+// JUST A CLOSING SIGNAL
 void closing();
+
 };
 
 #endif // MAINWINDOW_H

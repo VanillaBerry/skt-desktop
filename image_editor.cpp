@@ -14,9 +14,11 @@ image_editor::image_editor(QWidget *parent) :
     ui->setupUi(this);
     ui->scrollArea_image->hide();
 
+// SET PREVIEV BOX CHECKED
     prev=true;
     ui->checkBox_prev->setChecked(prev);
 
+// CONNECT TO BUTTONS
     connect(ui->pushButton_gray, SIGNAL (released()), this, SLOT (handleButton_Gray()));
     connect(ui->pushButton_reset, SIGNAL (released()), this, SLOT (handleButton_Reset()));
     connect(ui->pushButton_edges, SIGNAL (released()), this, SLOT (handleButton_Edges()));
@@ -32,6 +34,7 @@ image_editor::image_editor(QWidget *parent) :
     connect(ui->pushButton_zoomIN, SIGNAL (released()), this, SLOT (handleButton_zoomIN()));
     connect(ui->pushButton_zoomOUT, SIGNAL (released()), this, SLOT (handleButton_zoomOUT()));
 
+// SET WINDOW TITLE
     ui->label_size->hide();
     this->setWindowTitle("CRAB EDITOR");
 
@@ -48,7 +51,10 @@ void image_editor::setImage(QImage img_orig){
     img_old=img_orig;
     img_new=img_orig;
     img_viev=img_orig;
+
+//SCALE FACTOR
     scale=1.0;
+
     w_pixmap=img_orig.height();
     h_pixmap=img_orig.width();
 
@@ -245,13 +251,13 @@ void image_editor::setLocation(QString strng){
 
 void image_editor::handleButton_zoomIN(){
     scale*=1.25;
-    if (scale>4) scale=4;
+    if (scale>5) scale=5;
     refresh();
 };
 
 void image_editor::handleButton_zoomOUT(){
     scale*=0.8;
-    if (scale<0.5) scale=0.5;
+    if (scale<0.2) scale=0.2;
     refresh();
 };
 

@@ -2,6 +2,7 @@
 #define APP_DATABASE_H
 
 #include <QtSql>
+#include <QStandardItemModel>
 
 class app_database
 {
@@ -9,11 +10,17 @@ public:
     app_database();
     QSqlError databaseInit();
 
+    QStandardItemModel* app_db_model();
 
-void add_Semester(QString _parent, QString _title, QString _tags="");
-void add_Subject(QString _parent, QString _title, QString _tags="");
-void add_Lecture(QString _parent, QString _title, QString _tags="");
-void add_Page(QString _parent, QString _title, QString _tags="");
+
+// ADD PROCEDURES
+    void add_Semester(QString _parent, QString _title, QString _tags="");
+    void add_Semester(QString _title, QString _tags="");
+
+    void add_Subject(QString _parent, QString _title, QString _tags="");
+    void add_Lecture(QString _parent, QString _title, QString _tags="");
+    void add_Page(QString _parent, QString _title, QString _tags="");
+
 
 
 
@@ -22,10 +29,14 @@ void add_Page(QString _parent, QString _title, QString _tags="");
 
 private:
 
-    void add_Item();
+    void add_Item(QString _parent, int _level, QString _title, QString _tags="");
 
     void setStorageFile(QString str);
     QString StorageFilename;
+
+// MODEL ROOT
+    QStandardItemModel* standardModel;
+    QStandardItem *rootNode;
 
 };
 
