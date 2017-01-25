@@ -2,13 +2,21 @@
 #include "ui_mainwindow.h"
 #include "image_editor.h"
 #include "app_database.h"
-#include <QFileDialog>
+#include "subjectdialog.h"
+
+#include <QAbstractItemView>
 #include <QApplication>
 #include <QCloseEvent>
+#include <QComboBox>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QInputDialog>
+#include <QLineEdit>
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QStringList>
-#include <QInputDialog>
+#include <QPushButton>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,10 +25,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
 // CONNECT TO BUTTONS
-    connect(ui->pushButton_Exit, SIGNAL (clicked()), this, SLOT (handlebutton_Exit()));
     connect(ui->pushButton_newimg, SIGNAL(released()), this, SLOT (handlebutton_New()));
 
-// CONNECT TO MENU BUTTONS
+// CONNECT TO MENU BUTTONS FILE
+    connect(ui->actionExit, SIGNAL (triggered()), this, SLOT (handlebutton_Exit()));
+
+// CONNECT TO MENU BUTTONS ADD
     connect(ui->actionA_database, SIGNAL (triggered()), this, SLOT (handleA_database()));
     connect(ui->actionSemester, SIGNAL (triggered()), this, SLOT (handle_addSemester()));
     connect(ui->actionSubject, SIGNAL (triggered()), this, SLOT (handle_addSubject()));
@@ -30,9 +40,15 @@ MainWindow::MainWindow(QWidget *parent) :
 // IMAGE EDITOR
     img_edit = new image_editor();
     img_edit->hide();
-
 // CONNECT TO CLOSING OF EDITOR SIGNAL
     connect(img_edit, SIGNAL(EditorIsClosed()), this, SLOT (handleEditor_Closing()));
+
+//  SUBJECT DIALOG
+    subj_diag = new subjectdialog();
+    subj_diag->hide();
+// CONNECT TO SUBJ_DIAG BUTTON PRESSED
+    connect(subj_diag, SIGNAL(subjectDialog_ok()), this, SLOT (handle_subjDialogOK()));
+
 
 // DATABASE INIT
     app_db = new app_database;
@@ -44,9 +60,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->scrollArea_tree->setWidget(treeView);
  //   InitAppDatabase();
 
+// LIST VIEW
+    listView = new QListView();
+    ui->scrollArea_list->setWidget(listView);
+    createA_List();
+
+// COMBO BOXES
+    ui->comboBox_Semester->setInsertPolicy(QComboBox::NoInsert);
+    ui->comboBox_Subject->setInsertPolicy(QComboBox::NoInsert);
+    ui->comboBox_Lecture->setInsertPolicy(QComboBox::NoInsert);
+
+    ui->comboBox_Semester->addItems(app_db->db_SemesterList());
 
     EditorIsOpen=false;
-
 }
 
 MainWindow::~MainWindow()
@@ -78,19 +104,15 @@ void MainWindow::handlebutton_New(){
     {
         //do nothing;
     };
-
-
 };
 
 void MainWindow::handlebutton_Exit(){
     if (!EditorIsOpen) emit MainWindow::closing();
 };
 
-
 void MainWindow::handleEditor_Closing(){
     EditorIsOpen=false;
 };
-
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     if (EditorIsOpen)
@@ -100,30 +122,62 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 };
 
 void MainWindow::handleA_database(){
-
-    standardModel = app_db->app_db_model();
-    treeView->setModel(standardModel);
+    standardModel_tree = app_db->app_db_model();
+    treeView->setModel(standardModel_tree);
 
     // без этого две полосы прокрутки появляется
     treeView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-
 };
 
+void MainWindow::createA_List(){
+    standardModel_list = new QStandardItemModel;
 
+    QStringList list;
+    list<<"NAME"<<"TAGS";
+    standardModel_list->setHorizontalHeaderLabels(list);
+
+    listView->setModel(standardModel_list);
+    listView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+};
+
+void MainWindow::refresh_tree(){
+    standardModel_tree = app_db->app_db_model();
+    treeView->setModel(standardModel_tree);
+};
 
 void MainWindow::handle_addSemester(){
     bool ok;
     QString str;
 
+
     str = QInputDialog::getText(this, tr("ADD NEW SEMESTER"),
-                                tr("Semester name:"), QLineEdit::Normal,
+                                tr("Enter semester name here:"), QLineEdit::Normal,
                                 "New Semester", &ok);
 
     if (ok && !str.isEmpty())
     app_db->add_Semester(str);
+
+    refresh_tree();
 };
 
 
-void MainWindow::handle_addSubject(){};
+void MainWindow::handle_addSubject(){
+    subj_diag->setSemesterList(app_db->db_SemesterList());
+    subj_diag->show();
+
+    refresh_tree();
+};
+
 void MainWindow::handle_addLecture(){};
 void MainWindow::handle_addPage(){};
+
+void MainWindow::handle_subjDialogOK(){
+    bool ok=subj_diag->result(semester, subject);
+    if (ok)
+    {
+        app_db->add_Subject(semester, subject, "");
+        subj_diag->hide();
+    };
+
+    refresh_tree();
+};

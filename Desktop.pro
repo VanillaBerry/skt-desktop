@@ -16,15 +16,22 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     app_database.cpp \
     img_edit/img_effects.cpp \
-    image_editor.cpp
+    image_editor.cpp \
+    add_subjectdialog.cpp \
+    subjectdialog.cpp
 
 HEADERS  += mainwindow.h \
     app_database.h \
     img_edit/img_effects.h \
-    image_editor.h
+    image_editor.h \
+    add_subjectdialog.h \
+    subjectdialog.h
 
 FORMS    += mainwindow.ui \
-    image_editor.ui
+    image_editor.ui \
+    add_subject.ui \
+    add_lecture.ui \
+    subjectdialog.ui
 
 RESOURCES += \
     icons.qrc

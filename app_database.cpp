@@ -1,6 +1,7 @@
 #include "app_database.h"
 #include <QCryptographicHash>
 #include <QString>
+#include <QDateTime>
 
 app_database::app_database()
 {};
@@ -45,7 +46,11 @@ void app_database::setStorageFile(QString str){
 
 void app_database::add_Item(QString _parent, int _level, QString _title, QString _tags){
 // HASH WILL BE USED AS ID
-    QString _id = _parent;
+    QString _id = _parent+_title+_tags;
+    QDateTime _datetime;
+    _datetime.currentDateTimeUtc();
+    _id += _datetime.toString("dd.MM.yyyy hh:mm:ss.zzz");
+
     QByteArray _ba =_id.toUtf8();
     QString id = QCryptographicHash::hash(_ba, QCryptographicHash::Md5).toHex();
 
@@ -65,11 +70,20 @@ void app_database::add_Item(QString _parent, int _level, QString _title, QString
 
 void app_database::add_Semester(QString _parent, QString _title, QString _tags){
     _parent="root";
+
+// CHECHK WHETHER SEMESTER IS ON DATABASE
+    QSqlQuery query;
+    query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 1");
+    query.bindValue(0, _title);
+    query.exec();
+
+//  IF QUERY IS EMPTY, DO NOTHING
+    if (!query.next())
     add_Item(_parent, 1, _title, _tags);
 };
 
 void app_database::add_Semester(QString _title, QString _tags){
-    add_Item("root", 1, _title, _tags);
+    add_Semester("root", _title, _tags);
 };
 
 void app_database::add_Subject(QString _parent, QString _title, QString _tags){
@@ -90,32 +104,82 @@ void app_database::add_Page(QString _parent, QString _title, QString _tags){
 QStandardItemModel* app_database::app_db_model(){
 
     standardModel = new QStandardItemModel();
+/* QStandardItem *rootNode = standardModel->invisibleRootItem(); */
     rootNode = standardModel->invisibleRootItem();
 
     QStringList list;
-    list<<"SEMESTER"; //<<"DISCIPLINE";
+    list<<"NAME"<<"TAGS";
 
     standardModel->setHorizontalHeaderLabels(list);
 
-/*      QStandardItem *rootNode = standardModel->invisibleRootItem();*/
+/* SEMESTER LIST */
+    QSqlQuery query;
+    query.prepare("SELECT * FROM pagebook WHERE level = 1");
+    query.exec();
 
-    QStandardItem *rightItem = new QStandardItem("RIGHT");
-    QStandardItem *leftItem = new QStandardItem("LEFT");
+//  QList<QStandardItem> semesterlist;
+    QString semestername;
+    QString tags;
+    QList<QStandardItem *> semester_;
+//    QStandardItem *record;
 
-    QStandardItem *Item1 = new QStandardItem("1");
-    QStandardItem *Item2 = new QStandardItem("2");
-    QStandardItem *Item3 = new QStandardItem("3");
-    QStandardItem *Item4 = new QStandardItem("4");
+    while (query.next())
+    {
+        semestername = query.value("title").toString();
+        tags = query.value("tags").toString();
+        semester_.clear();
+        semester_ << new QStandardItem(semestername)<< new QStandardItem(tags);
+//        addSubjects_toItem(semester_);
+// YOU CAN NOT EDIT
+        semester_[0]->setEditable(false);
+        semester_[1]->setEditable(false);
 
-    rootNode->appendRow(rightItem);
-    rootNode->appendRow(leftItem);
+   //     record = new QStandardItem(semestername);
+   //     rootNode->appendRow(record);
 
-    rightItem->appendRow(Item1);
-    rightItem->appendRow(Item2);
-
-    leftItem->appendRow(Item3);
-    leftItem->appendRow(Item4);
+        rootNode->appendRow(semester_);
+    };
 
     return standardModel;
+};
+
+
+
+
+
+
+
+// GET LIST PROCEDURES
+QStringList app_database::db_SemesterList(){
+    /* SEMESTER LIST */
+        QSqlQuery query;
+        query.prepare("SELECT * FROM pagebook WHERE level = 1");
+        query.exec();
+
+    QStringList SemesterList;
+
+    while (query.next())
+        SemesterList+=query.value("title").toString();
+
+    return SemesterList;
+};
+
+void app_database::addSubjects_toItem(QStandardItem *_item){
+
 
 };
+
+/*
+    void addLectures_toItem(QStandardItem *_item);
+    void addPages_toItem(QStandardItem *_item);*/
+
+
+/*
+QStringList app_database::db_SubjectsList();
+QStringList app_database::db_SubjectsList(QString _semester);
+
+QStringList app_database::db_LecturesList();
+QStringList app_database::db_LecturesList(QString _subject);
+
+QStringList app_database::db_PagesList();
+QStringList app_database::db_PagesList(QString _lecture);*/

@@ -6,7 +6,7 @@
 
 
 namespace Ui {
-class image_editor;
+    class image_editor;
 }
 
 class image_editor : public QWidget

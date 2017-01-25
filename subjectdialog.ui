@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>subjectdialog</class>
+ <widget class="QWidget" name="subjectdialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>377</width>
+    <height>65</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QComboBox" name="comboBox_Semester"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEdit_SubjectName"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_SubjectAccept">
+       <property name="text">
+        <string>ADD SUBJECT</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
