@@ -38,11 +38,11 @@ QStringList db_PagesList(QString _lecture);
     app_db_use();*/
 
 private:
-    void addSubjects_toItem(QStandardItem *_item);
-    void addLectures_toItem(QStandardItem *_item);
-    void addPages_toItem(QStandardItem *_item);
+    void addSubjects_toItem(QList<QStandardItem *> &_item);
+    void addLectures_toItem(QList<QStandardItem *> &_item);
+    void addPages_toItem(QList<QStandardItem *> &_item);
 
-    void add_Item(QString _parent, int _level, QString _title, QString _tags="");
+    void add_Item(QString _parentID, int _level, QString _title, QString _tags="");
 
     void setStorageFile(QString str);
     QString StorageFilename;

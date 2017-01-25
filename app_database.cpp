@@ -44,22 +44,23 @@ void app_database::setStorageFile(QString str){
     StorageFilename=str;
 };
 
-void app_database::add_Item(QString _parent, int _level, QString _title, QString _tags){
+void app_database::add_Item(QString _parentID, int _level, QString _title, QString _tags){
 // HASH WILL BE USED AS ID
-    QString _id = _parent+_title+_tags;
+    QString _id = _parentID+_title+_tags;
     QDateTime _datetime;
     _datetime.currentDateTimeUtc();
     _id += _datetime.toString("dd.MM.yyyy hh:mm:ss.zzz");
 
     QByteArray _ba =_id.toUtf8();
     QString id = QCryptographicHash::hash(_ba, QCryptographicHash::Md5).toHex();
+    id.truncate(8);
 
 // ADD ITEM TO DATABASE
     QSqlQuery query;
 
     query.prepare("INSERT INTO pagebook (id, parent, level, title, tags) VALUES (:id, :parent, :level, :title, :tags);");
     query.bindValue(":id", id);
-    query.bindValue(":parent", _parent);
+    query.bindValue(":parent", _parentID);
     query.bindValue(":level", _level);
     query.bindValue(":title", _title);
     query.bindValue(":tags", _tags);
@@ -71,7 +72,7 @@ void app_database::add_Item(QString _parent, int _level, QString _title, QString
 void app_database::add_Semester(QString _parent, QString _title, QString _tags){
     _parent="root";
 
-// CHECHK WHETHER SEMESTER IS ON DATABASE
+// CHECK WHETHER SEMESTER IS ON DATABASE
     QSqlQuery query;
     query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 1");
     query.bindValue(0, _title);
@@ -87,7 +88,19 @@ void app_database::add_Semester(QString _title, QString _tags){
 };
 
 void app_database::add_Subject(QString _parent, QString _title, QString _tags){
-    add_Item(_parent, 2, _title, _tags);
+// CHECHK WHETHER PARENT SEMESTER IS ON DATABASE
+    QSqlQuery query;
+    query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 1");
+    query.bindValue(0, _parent);
+    query.exec();
+
+    if (query.next())
+    {
+        QString _parentID=query.value("id").toString();
+        add_Item(_parentID, 2, _title, _tags);
+    }
+//  IF QUERY IS EMPTY, DO NOTHING
+
 };
 
 void app_database::add_Lecture(QString _parent, QString _title, QString _tags){
@@ -108,7 +121,7 @@ QStandardItemModel* app_database::app_db_model(){
     rootNode = standardModel->invisibleRootItem();
 
     QStringList list;
-    list<<"NAME"<<"TAGS";
+    list<<"NAME"<<"TAGS"<<"ID";
 
     standardModel->setHorizontalHeaderLabels(list);
 
@@ -120,33 +133,30 @@ QStandardItemModel* app_database::app_db_model(){
 //  QList<QStandardItem> semesterlist;
     QString semestername;
     QString tags;
+    QString id;
     QList<QStandardItem *> semester_;
-//    QStandardItem *record;
 
     while (query.next())
     {
         semestername = query.value("title").toString();
         tags = query.value("tags").toString();
+        id = query.value("id").toString();
+
         semester_.clear();
-        semester_ << new QStandardItem(semestername)<< new QStandardItem(tags);
-//        addSubjects_toItem(semester_);
+        semester_ << new QStandardItem(semestername)<< new QStandardItem(tags)<< new QStandardItem(id);
+
+        addSubjects_toItem(semester_);
+
 // YOU CAN NOT EDIT
         semester_[0]->setEditable(false);
         semester_[1]->setEditable(false);
-
-   //     record = new QStandardItem(semestername);
-   //     rootNode->appendRow(record);
+        semester_[2]->setEditable(false);
 
         rootNode->appendRow(semester_);
     };
 
     return standardModel;
 };
-
-
-
-
-
 
 
 // GET LIST PROCEDURES
@@ -164,14 +174,102 @@ QStringList app_database::db_SemesterList(){
     return SemesterList;
 };
 
-void app_database::addSubjects_toItem(QStandardItem *_item){
+void app_database::addSubjects_toItem(QList<QStandardItem *> &_item){
+        QString _parentid = _item[2]->text();
+        QList<QStandardItem *> newsubject;
 
+        QSqlQuery query;
+        query.prepare("SELECT * FROM pagebook WHERE parent = ? AND level = 2");
+        query.bindValue(0, _parentid);
+        query.exec();
 
+        QString subjectname;
+        QString tags;
+        QString id;
+
+        while (query.next())
+        {
+            subjectname = query.value("title").toString();
+            tags = query.value("tags").toString();
+            id = query.value("id").toString();
+
+            newsubject.clear();
+            newsubject << new QStandardItem(subjectname)<< new QStandardItem(tags)<< new QStandardItem(id);
+
+            addLectures_toItem(newsubject);
+    // YOU CAN NOT EDIT
+            newsubject[0]->setEditable(false);
+            newsubject[1]->setEditable(false);
+            newsubject[2]->setEditable(false);
+
+            _item[0]->appendRow(newsubject);
+        };
 };
 
-/*
-    void addLectures_toItem(QStandardItem *_item);
-    void addPages_toItem(QStandardItem *_item);*/
+
+void app_database::addLectures_toItem(QList<QStandardItem *> &_item){
+    QString _parentid = _item[2]->text();
+    QList<QStandardItem *> newlecture;
+
+    QSqlQuery query;
+    query.prepare("SELECT * FROM pagebook WHERE parent = ? AND level = 3");
+    query.bindValue(0, _parentid);
+    query.exec();
+
+    QString subjectname;
+    QString tags;
+    QString id;
+
+    while (query.next())
+    {
+        subjectname = query.value("title").toString();
+        tags = query.value("tags").toString();
+        id = query.value("id").toString();
+
+        newlecture.clear();
+        newlecture << new QStandardItem(subjectname)<< new QStandardItem(tags)<< new QStandardItem(id);
+
+        addPages_toItem(newlecture);
+// YOU CAN NOT EDIT
+        newlecture[0]->setEditable(false);
+        newlecture[1]->setEditable(false);
+        newlecture[2]->setEditable(false);
+
+        _item[0]->appendRow(newlecture);
+    };
+};
+
+
+void app_database::addPages_toItem(QList<QStandardItem *> &_item){
+    QString _parentid = _item[2]->text();
+    QList<QStandardItem *> newpage;
+
+    QSqlQuery query;
+    query.prepare("SELECT * FROM pagebook WHERE parent = ? AND level = 4");
+    query.bindValue(0, _parentid);
+    query.exec();
+
+    QString subjectname;
+    QString tags;
+    QString id;
+
+    while (query.next())
+    {
+        subjectname = query.value("title").toString();
+        tags = query.value("tags").toString();
+        id = query.value("id").toString();
+
+        newpage.clear();
+        newpage << new QStandardItem(subjectname)<< new QStandardItem(tags)<< new QStandardItem(id);
+
+// YOU CAN NOT EDIT
+        newpage[0]->setEditable(false);
+        newpage[1]->setEditable(false);
+        newpage[2]->setEditable(false);
+
+        _item[0]->appendRow(newpage);
+    };
+};
 
 
 /*
