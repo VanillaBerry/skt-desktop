@@ -12,6 +12,8 @@ public:
 
     QStandardItemModel* app_db_model();
 
+    int getLevel(QString _id);
+
 
 // ADD PROCEDURES
     void add_Semester(QString _parent, QString _title, QString _tags="");

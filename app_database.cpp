@@ -454,6 +454,21 @@ void app_database::add_Image(QString _imageID, QString _imageLOC, QString &_newt
     _newtag=id;
 };
 
+int app_database::getLevel(QString _id){
+    QSqlQuery query;
+
+    query.prepare("SELECT * FROM pagebook WHERE id = ?");
+    query.bindValue(0,_id);
+    query.exec();
+
+    if (!query.next()) return 0;
+
+    int result;
+    result = query.value("level").toInt();
+
+    return result;
+};
+
 /*
 QStringList app_database::db_LecturesList();
 QStringList app_database::db_LecturesList(QString _subject);

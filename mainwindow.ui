@@ -195,6 +195,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionView_selected"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menuFile"/>
@@ -254,6 +255,11 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionView_selected">
+   <property name="text">
+    <string>View selected</string>
    </property>
   </action>
  </widget>

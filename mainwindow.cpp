@@ -36,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSubject, SIGNAL (triggered()), this, SLOT (handle_addSubject()));
     connect(ui->actionLecture, SIGNAL (triggered()), this, SLOT (handle_addLecture()));
 
+// CONNECT TO -> BUTTON
+    connect(ui->pushButton_addPagesToList, SIGNAL (pressed()), this, SLOT (handle_AddPagesToList()));
+
 // IMAGE EDITOR
     img_edit = new image_editor();
     img_edit->hide();
@@ -71,6 +74,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     treeView = new QTreeView();
     ui->scrollArea_tree->setWidget(treeView);
+    treeView->setSelectionMode(QAbstractItemView::SingleSelection);
+    treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
+
  //   InitAppDatabase();
 
 // LIST VIEW
@@ -159,10 +165,12 @@ void MainWindow::handleA_database(){
 };
 
 void MainWindow::createA_List(){
-    standardModel_list = new QStandardItemModel;
+    standardModel_list = new QStandardItemModel();
+    list_rootNode = standardModel_list->invisibleRootItem();
 
     QStringList list;
     list<<"NAME"<<"TAGS";
+
     standardModel_list->setHorizontalHeaderLabels(list);
 
     listView->setModel(standardModel_list);
@@ -208,17 +216,6 @@ void MainWindow::handle_addPage(){
     subject = ui->comboBox_Subject->currentText();
     lecture = ui->comboBox_Lecture->currentText();
     page = ui->lineEdit_PageName->text();
-
- /*   QImage _img;
-    _img.load(imgLocation);
-
-    QString newlocation = "//images//";
-
-    newlocation +=subject;
-    newlocation +=lecture;
-    newlocation +=page;
-    newlocation +=".jpg";
-    _img.save(newlocation);*/
 
     bool _res = app_db->add_Page(semester, subject, lecture, page, "", imgLocation);
     if (_res)
@@ -281,4 +278,31 @@ void MainWindow::downline_SubjectPressed(){
     QStringList _strList = app_db->db_LecturesList(semester, subject);
     ui->comboBox_Lecture->clear();
     ui->comboBox_Lecture->addItems(_strList);
+};
+
+void MainWindow::handle_AddPagesToList(){
+
+    QModelIndexList _index = treeView->selectionModel()->selectedIndexes();
+
+    if (!_index.isEmpty())
+    {
+
+    QString name = _index.constFirst().data(0).toString();
+    QString ID = _index.constLast().data(0).toString();
+
+    int _level = app_db->getLevel(ID);
+
+       if (_level==4)
+       {
+        QList<QStandardItem *> _newpage;
+        _newpage << new QStandardItem(name) << new QStandardItem(ID);
+        _newpage[0]->setEditable(false);
+        _newpage[1]->setEditable(false);
+
+        list_rootNode->appendRow(_newpage);
+
+        ui->label_imageLocation->setText(name+ID);
+       };
+    };
+    // ELSE DO NOTHING
 };

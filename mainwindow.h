@@ -50,6 +50,7 @@ private:
     QListView * listView;
     QStandardItemModel *standardModel_list;
     void createA_List();
+    QStandardItem *list_rootNode;
 
 // CURRENT ELEMENT
     QString semester;
@@ -93,6 +94,9 @@ private slots:
 // SLOTS FOR LECTUREDIAG
     void handle_lectureDialogOK();
     void handle_lectureDialogSemesterPressed();
+
+// ADD TO LIST SLOT
+    void handle_AddPagesToList();
 
 public: signals:
 // JUST A CLOSING SIGNAL
