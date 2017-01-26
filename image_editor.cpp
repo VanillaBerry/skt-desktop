@@ -126,8 +126,13 @@ void image_editor::handleButton_Save(){
     {
         img_old=img_new;
         QString newstr = QFileDialog::getSaveFileName();
-        img_old.save(newstr,0,100);
-
+        if (!newstr.isEmpty())
+        {
+            newstr+=".jpg";
+            img_old.save(newstr,0,100);
+            str=newstr;
+            emit LocationChanged();
+        }
     };  /*!!!!!!*/
 
     refresh();
@@ -264,4 +269,8 @@ void image_editor::handleButton_zoomOUT(){
 void image_editor::closeEvent(QCloseEvent *event) {
     emit EditorIsClosed();
     event->accept();
+};
+
+void image_editor::getLocation(QString &loc){
+    loc=str;
 };

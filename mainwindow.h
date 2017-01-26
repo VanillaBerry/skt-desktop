@@ -6,6 +6,7 @@
 #include "image_editor.h"
 #include "app_database.h"
 #include "subjectdialog.h"
+#include "lecturedialog.h"
 
 #include <QTreeView>
 #include <QStandardItem>
@@ -33,20 +34,22 @@ private:
 // IMAGE EDITOR
     bool EditorIsOpen;
     image_editor *img_edit;
-    subjectdialog *subj_diag;
+    QString imgLocation;
 
 // TREE + DATABASE
     QTreeView * treeView;
     app_database *app_db;
     QStandardItemModel *standardModel_tree;
 
-void refresh_tree();
+    subjectdialog *subj_diag;
+    lecturedialog *lect_diag;
+
+    void refresh_tree();
 
 // LIST OF IMAGES
     QListView * listView;
     QStandardItemModel *standardModel_list;
-
-void createA_List();
+    void createA_List();
 
 // CURRENT ELEMENT
     QString semester;
@@ -66,9 +69,11 @@ private slots:
 // SLOTS FOR BUTTONS
     void handlebutton_New();
     void handlebutton_Exit();
+    void handlebutton_ImgLocation();
 
-// ONE SLOT TO SENSE WHETHER IMAGE EDITORIS CLOSED
+// ONE SLOT TO SENSE IMAGE EDITOR
     void handleEditor_Closing();
+    void handleImageLocationChanged();
 
 // SLOTS FOR MENU BUTTONS
     void handleA_database();
@@ -79,6 +84,10 @@ private slots:
 
 // SLOT FOR SUBJDIAG
     void handle_subjDialogOK();
+
+// SLOTS FOR LECTUREDIAG
+    void handle_lectureDialogOK();
+    void handle_lectureDialogSemesterPressed();
 
 public: signals:
 // JUST A CLOSING SIGNAL

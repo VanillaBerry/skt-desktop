@@ -17,19 +17,20 @@ SOURCES += main.cpp\
     app_database.cpp \
     img_edit/img_effects.cpp \
     image_editor.cpp \
-    subjectdialog.cpp
+    subjectdialog.cpp \
+    lecturedialog.cpp
 
 HEADERS  += mainwindow.h \
     app_database.h \
     img_edit/img_effects.h \
     image_editor.h \
-    subjectdialog.h
+    subjectdialog.h \
+    lecturedialog.h
 
 FORMS    += mainwindow.ui \
     image_editor.ui \
-    add_subject.ui \
-    add_lecture.ui \
-    subjectdialog.ui
+    subjectdialog.ui \
+    lecturedialog.ui
 
 RESOURCES += \
     icons.qrc

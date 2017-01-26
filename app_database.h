@@ -18,8 +18,11 @@ public:
     void add_Semester(QString _title, QString _tags="");
 
     void add_Subject(QString _parent, QString _title, QString _tags="");
-    void add_Lecture(QString _parent, QString _title, QString _tags="");
-    void add_Page(QString _parent, QString _title, QString _tags="");
+
+    void add_LectureFromID(QString _parentID, QString _title, QString _tags="");
+    void add_Lecture(QString _semester, QString _subject, QString _title, QString _tags="");
+
+    void add_PageFromID(QString _parent, QString _title, QString _tags="");
 
 // GET LIST PROCEDURES
 QStringList db_SemesterList();

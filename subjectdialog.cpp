@@ -17,8 +17,9 @@ subjectdialog::~subjectdialog()
 }
 
 void subjectdialog::setSemesterList(QStringList _list){
+    _SemesterList=_list;
     ui->comboBox_Semester->clear();
-    ui->comboBox_Semester->addItems(_list);
+    ui->comboBox_Semester->addItems(_SemesterList);
     ui->comboBox_Semester->show();
 };
 

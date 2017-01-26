@@ -103,13 +103,15 @@ void app_database::add_Subject(QString _parent, QString _title, QString _tags){
 
 };
 
-void app_database::add_Lecture(QString _parent, QString _title, QString _tags){
-    add_Item(_parent, 3, _title, _tags);
+void app_database::add_LectureFromID(QString _parentID, QString _title, QString _tags){
+    add_Item(_parentID, 3, _title, _tags);
 };
 
+/*
 void app_database::add_Page(QString _parent, QString _title, QString _tags){
     add_Item(_parent, 4, _title, _tags);
 };
+*/
 
 /*--- ADD PROCEDURES ---*/
 
@@ -272,10 +274,81 @@ void app_database::addPages_toItem(QList<QStandardItem *> &_item){
 };
 
 
-/*
-QStringList app_database::db_SubjectsList();
-QStringList app_database::db_SubjectsList(QString _semester);
 
+QStringList app_database::db_SubjectsList(){
+    QStringList result;
+
+    return result;
+};
+
+QStringList app_database::db_SubjectsList(QString _semester){
+    QStringList result;
+
+    /* SUBJECTS LIST */
+        QSqlQuery query;
+        query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 1");
+        query.bindValue(0, _semester);
+        query.exec();
+
+    if (!query.next()) return result;
+
+    QString id = query.value("id").toString();
+
+    query.prepare("SELECT * FROM pagebook WHERE parent = ? AND level = 2");
+    query.bindValue(0, id);
+    query.exec();
+
+    while (query.next())
+        result+=query.value("title").toString();
+
+    return result;
+
+};
+
+void app_database::add_Lecture(QString _semester, QString _subject, QString _title, QString _tags){
+    QSqlQuery query;
+    query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 2");
+    query.bindValue(0, _subject);
+    query.exec();
+
+    QString id, name;
+    QSqlQuery secondQuery;
+    bool finded=false;
+
+    while (query.next() and (!finded))
+    {
+        id = query.value("parent").toString();
+
+        secondQuery.prepare("SELECT * FROM pagebook WHERE id = ? AND level = 1");
+        secondQuery.bindValue(0, id);
+        secondQuery.exec();
+
+        while (secondQuery.next()) {
+            name = secondQuery.value("title").toString();
+            if (name==_semester)
+            {
+               id = query.value("id").toString();
+               finded=true;
+            };
+        };
+    };
+
+// CHECK IS THERE LECTION WITH SUCH TITLE
+    if (finded)
+    {
+        query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 3 AND parent = ?");
+        query.bindValue(0, _title);
+        query.bindValue(1, id);
+        query.exec();
+
+        if (!query.next())
+        add_Item(id, 3, _title, _tags);
+
+    };
+    // ELSE DO NOTHING
+};
+
+/*
 QStringList app_database::db_LecturesList();
 QStringList app_database::db_LecturesList(QString _subject);
 

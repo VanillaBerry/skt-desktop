@@ -35,22 +35,31 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSemester, SIGNAL (triggered()), this, SLOT (handle_addSemester()));
     connect(ui->actionSubject, SIGNAL (triggered()), this, SLOT (handle_addSubject()));
     connect(ui->actionLecture, SIGNAL (triggered()), this, SLOT (handle_addLecture()));
-    connect(ui->actionPage, SIGNAL (triggered()), this, SLOT (handle_addPage()));
+//    connect(ui->actionPage, SIGNAL (triggered()), this, SLOT (handle_addPage()));
 
 // IMAGE EDITOR
     img_edit = new image_editor();
     img_edit->hide();
-// CONNECT TO CLOSING OF EDITOR SIGNAL
+    ui->label_imageLocation->setText("image location is not selected");
+    connect(ui->pushButton_selectImgLoc, SIGNAL(pressed()), this, SLOT (handlebutton_ImgLocation()));
+    connect(img_edit, SIGNAL (LocationChanged()), this, SLOT (handleImageLocationChanged()));
+
+//  CONNECT TO CLOSING OF EDITOR SIGNAL
     connect(img_edit, SIGNAL(EditorIsClosed()), this, SLOT (handleEditor_Closing()));
 
 //  SUBJECT DIALOG
     subj_diag = new subjectdialog();
     subj_diag->hide();
-// CONNECT TO SUBJ_DIAG BUTTON PRESSED
+//  CONNECT TO SUBJ_DIAG BUTTON PRESSED
     connect(subj_diag, SIGNAL(subjectDialog_ok()), this, SLOT (handle_subjDialogOK()));
 
+//  LECTURE DIALOG
+    lect_diag = new lecturedialog();
+    lect_diag->hide();
+    connect(lect_diag, SIGNAL(signalSemesterPressed()), this, SLOT (handle_lectureDialogSemesterPressed()));
+    connect(lect_diag, SIGNAL(lectureDialog_ok()), this, SLOT (handle_lectureDialogOK()));
 
-// DATABASE INIT
+//  DATABASE INIT
     app_db = new app_database;
     app_db->databaseInit();
 
@@ -82,23 +91,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::handlebutton_New(){
 
-    if(!EditorIsOpen)
+    if((!EditorIsOpen) and (!imgLocation.isEmpty()))
     {
-    QImage img_orig;
-    QString str;
+        QImage img_orig;
+        img_orig.load(imgLocation);
+        img_orig.convertToFormat(QImage::Format_RGB32);
 
-    str=QFileDialog::getOpenFileName(0, "Select Image", "..//", "*.jpg *.png *.bmp");
+        img_edit->setImage(img_orig);
+        img_edit->setLocation(imgLocation);
+        img_edit->show();
+        this->lower();
 
-    img_orig.load(str);
-    img_orig.convertToFormat(QImage::Format_RGB32);
-
-    img_edit->setImage(img_orig);
-    img_edit->setLocation(str);
-    img_edit->show();
-    this->lower();
-
-    EditorIsOpen=true;
-
+        EditorIsOpen=true;
     }
     else
     {
@@ -112,6 +116,7 @@ void MainWindow::handlebutton_Exit(){
 
 void MainWindow::handleEditor_Closing(){
     EditorIsOpen=false;
+    this->raise();
 };
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -119,6 +124,24 @@ void MainWindow::closeEvent(QCloseEvent *event) {
         event->ignore();
     else
         event->accept();
+};
+
+// FOR IMAGE EDITOR
+void MainWindow::handlebutton_ImgLocation(){
+    QString str;
+    str=QFileDialog::getOpenFileName(0, "Select Image", "..//", "*.jpg *.png *.bmp");
+    if (!str.isEmpty())
+    {
+        imgLocation=str;
+        ui->label_imageLocation->setText(imgLocation);
+    };
+    //else do nothing
+};
+
+// FOR IMAGE EDITOR
+void MainWindow::handleImageLocationChanged(){
+    img_edit->getLocation(imgLocation);
+    ui->label_imageLocation->setText(imgLocation);
 };
 
 void MainWindow::handleA_database(){
@@ -149,11 +172,9 @@ void MainWindow::handle_addSemester(){
     bool ok;
     QString str;
 
-
     str = QInputDialog::getText(this, tr("ADD NEW SEMESTER"),
                                 tr("Enter semester name here:"), QLineEdit::Normal,
                                 "New Semester", &ok);
-
     if (ok && !str.isEmpty())
     app_db->add_Semester(str);
 
@@ -164,11 +185,19 @@ void MainWindow::handle_addSemester(){
 void MainWindow::handle_addSubject(){
     subj_diag->setSemesterList(app_db->db_SemesterList());
     subj_diag->show();
-
-    refresh_tree();
 };
 
-void MainWindow::handle_addLecture(){};
+void MainWindow::handle_addLecture(){
+    QStringList _semesterList=app_db->db_SemesterList();
+
+    lect_diag->SetSemesterList(_semesterList);
+//    lect_diag->SetDatabase(app_db);
+
+    lect_diag->SetSubjectList(app_db->db_SubjectsList(_semesterList.first()));
+    lect_diag->show();
+};
+
+
 void MainWindow::handle_addPage(){};
 
 void MainWindow::handle_subjDialogOK(){
@@ -177,7 +206,23 @@ void MainWindow::handle_subjDialogOK(){
     {
         app_db->add_Subject(semester, subject, "");
         subj_diag->hide();
+        refresh_tree();
     };
+};
 
-    refresh_tree();
+
+// FOR LECTURE DIALOG
+void MainWindow::handle_lectureDialogOK(){
+    bool ok=lect_diag->result(semester, subject, lecture);
+    if (ok)
+    {
+        app_db->add_Lecture(semester, subject, lecture, "");
+        lect_diag->hide();
+        refresh_tree();
+    };
+};
+
+void MainWindow::handle_lectureDialogSemesterPressed(){
+     bool ok=lect_diag->result(semester, subject, lecture);
+     lect_diag->SetSubjectList(app_db->db_SubjectsList(semester));
 };

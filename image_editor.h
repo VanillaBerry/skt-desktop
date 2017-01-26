@@ -19,6 +19,7 @@ public:
 
 void setImage(QImage img_orig);
 void setLocation(QString strng);
+void getLocation(QString &loc);
 
 private:
     QLabel *imagelabel;
@@ -57,7 +58,7 @@ void handleButton_zoomOUT();
 
 signals:
 void EditorIsClosed();
-
+void LocationChanged();
 
 };
 
