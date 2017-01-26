@@ -22,6 +22,8 @@ public:
     void add_LectureFromID(QString _parentID, QString _title, QString _tags="");
     void add_Lecture(QString _semester, QString _subject, QString _title, QString _tags="");
 
+    bool add_Page(QString _semester, QString _subject, QString _lecture, QString _title, QString _tags, QString _location);
+
     void add_PageFromID(QString _parent, QString _title, QString _tags="");
 
 // GET LIST PROCEDURES
@@ -31,7 +33,7 @@ QStringList db_SubjectsList();
 QStringList db_SubjectsList(QString _semester);
 
 QStringList db_LecturesList();
-QStringList db_LecturesList(QString _subject);
+QStringList db_LecturesList(QString _semester, QString _subject);
 
 QStringList db_PagesList();
 QStringList db_PagesList(QString _lecture);
@@ -45,7 +47,10 @@ private:
     void addLectures_toItem(QList<QStandardItem *> &_item);
     void addPages_toItem(QList<QStandardItem *> &_item);
 
-    void add_Item(QString _parentID, int _level, QString _title, QString _tags="");
+    void add_Item(QString _parentID, int _level, QString _title, QString _tags, QString &_newtag);
+    void add_Item(QString _parentID, int _level, QString _title, QString _tags);
+    void add_Image(QString _imageID, QString _imageLOC, QString &_newtag);
+
 
     void setStorageFile(QString str);
     QString StorageFilename;

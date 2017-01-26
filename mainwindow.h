@@ -80,6 +80,11 @@ private slots:
     void handle_addSemester();
     void handle_addSubject();
     void handle_addLecture();
+
+// SLOTS FOR PAGE SELECTING
+    void downline_SemesterPressed();
+    void downline_SubjectPressed();
+//    void downline_LecturePressed();
     void handle_addPage();
 
 // SLOT FOR SUBJDIAG

@@ -40,7 +40,6 @@ image_editor::image_editor(QWidget *parent) :
 
 }
 
-
 image_editor::~image_editor()
 {
     emit EditorIsClosed();

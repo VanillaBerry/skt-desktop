@@ -31,7 +31,8 @@ QSqlError app_database::databaseInit(){
 
     if (!tables.contains("imagelist", Qt::CaseInsensitive))
      {
-       //do something
+        _createTable.prepare("CREATE TABLE imagelist(id varchar primary key, imageID varchar, imageLocation varchar)");
+        _createTable.exec();
      };
 
 
@@ -44,7 +45,7 @@ void app_database::setStorageFile(QString str){
     StorageFilename=str;
 };
 
-void app_database::add_Item(QString _parentID, int _level, QString _title, QString _tags){
+void app_database::add_Item(QString _parentID, int _level, QString _title, QString _tags, QString &_newtag){
 // HASH WILL BE USED AS ID
     QString _id = _parentID+_title+_tags;
     QDateTime _datetime;
@@ -65,6 +66,13 @@ void app_database::add_Item(QString _parentID, int _level, QString _title, QStri
     query.bindValue(":title", _title);
     query.bindValue(":tags", _tags);
     query.exec();
+
+    _newtag=_id;
+};
+
+void app_database::add_Item(QString _parentID, int _level, QString _title, QString _tags){
+        QString newtag;
+        add_Item(_parentID, _level, _title, _tags, newtag);
 };
 
 /*--- ADD PROCEDURES ---*/
@@ -346,6 +354,104 @@ void app_database::add_Lecture(QString _semester, QString _subject, QString _tit
 
     };
     // ELSE DO NOTHING
+};
+
+QStringList app_database::db_LecturesList(QString _semester, QString _subject){
+    QStringList result;
+
+    QSqlQuery query;
+    query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 1");
+    query.bindValue(0, _semester);
+    query.exec();
+
+    if (!query.next()) return result;
+
+    QString semesterID = query.value("id").toString();
+    query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 2 AND parent = ?");
+    query.bindValue(0, _subject);
+    query.bindValue(1, semesterID);
+    query.exec();
+
+    if (!query.next()) return result;
+    QString subjectID = query.value("id").toString();
+    query.prepare("SELECT * FROM pagebook WHERE level = 3 AND parent = ?");
+    query.bindValue(0, subjectID);
+    query.exec();
+
+    while (query.next())
+        result+=query.value("title").toString();
+
+    return result;
+};
+
+
+bool app_database::add_Page(QString _semester, QString _subject, QString _lecture, QString _title, QString _tags, QString _location){
+    bool result=false;
+
+    QSqlQuery query;
+    query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 1");
+    query.bindValue(0, _semester);
+    query.exec();
+
+    if (!query.next()) return result;
+
+    QString semesterID = query.value("id").toString();
+
+    query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 2 AND parent = ?");
+    query.bindValue(0, _subject);
+    query.bindValue(1, semesterID);
+    query.exec();
+
+    if (!query.next()) return result;
+
+    QString subjectID = query.value("id").toString();
+
+    query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 3 AND parent = ?");
+    query.bindValue(0, _lecture);
+    query.bindValue(1, subjectID);
+    query.exec();
+
+    if (!query.next()) return result;
+
+    QString lectureID = query.value("id").toString();
+
+    query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 4 AND parent = ?");
+    query.bindValue(0, _title);
+    query.bindValue(1, lectureID);
+    query.exec();
+
+// IF PAGE ALREADY EXISTS, DO NOTHING
+    if (query.next()) return result;
+
+    QString _newID;
+    add_Item(lectureID, 4, _title, _tags, _newID);
+
+    add_Image(_newID, _location, _newID);
+
+    result=true;
+    return result;
+};
+
+void app_database::add_Image(QString _imageID, QString _imageLOC, QString &_newtag){
+// HASH WILL BE USED AS ID
+    QString _id = _imageID + _imageLOC;
+    QDateTime _datetime;
+    _datetime.currentDateTimeUtc();
+    _id += _datetime.toString("dd.MM.yyyy hh:mm:ss.zzz");
+
+    QByteArray _ba =_id.toUtf8();
+    QString id = QCryptographicHash::hash(_ba, QCryptographicHash::Md5).toHex();
+    id.truncate(8);
+
+    QSqlQuery query;
+
+    query.prepare("INSERT INTO imagelist (id, imageID, imageLocation) VALUES (:id, :imageID; imageLocation);");
+    query.bindValue(":id", id);
+    query.bindValue(":imageID", _imageID);
+    query.bindValue(":imageLocation", _imageLOC);
+    query.exec();
+
+    _newtag=id;
 };
 
 /*

@@ -35,7 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSemester, SIGNAL (triggered()), this, SLOT (handle_addSemester()));
     connect(ui->actionSubject, SIGNAL (triggered()), this, SLOT (handle_addSubject()));
     connect(ui->actionLecture, SIGNAL (triggered()), this, SLOT (handle_addLecture()));
-//    connect(ui->actionPage, SIGNAL (triggered()), this, SLOT (handle_addPage()));
 
 // IMAGE EDITOR
     img_edit = new image_editor();
@@ -58,6 +57,11 @@ MainWindow::MainWindow(QWidget *parent) :
     lect_diag->hide();
     connect(lect_diag, SIGNAL(signalSemesterPressed()), this, SLOT (handle_lectureDialogSemesterPressed()));
     connect(lect_diag, SIGNAL(lectureDialog_ok()), this, SLOT (handle_lectureDialogOK()));
+
+//  CONNECT TO DOWNLINE COMBOBOXES
+    connect(ui->comboBox_Semester, SIGNAL(currentIndexChanged(int)), this, SLOT(downline_SemesterPressed()));
+    connect(ui->comboBox_Subject, SIGNAL(currentIndexChanged(int)), this, SLOT(downline_SubjectPressed()));
+    connect(ui->pushButton_AddPage, SIGNAL(pressed()), this, SLOT(handle_addPage()));
 
 //  DATABASE INIT
     app_db = new app_database;
@@ -82,6 +86,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBox_Semester->addItems(app_db->db_SemesterList());
 
     EditorIsOpen=false;
+
+    this->handleA_database();
 }
 
 MainWindow::~MainWindow()
@@ -197,8 +203,29 @@ void MainWindow::handle_addLecture(){
     lect_diag->show();
 };
 
+void MainWindow::handle_addPage(){
+    semester = ui->comboBox_Semester->currentText();
+    subject = ui->comboBox_Subject->currentText();
+    lecture = ui->comboBox_Lecture->currentText();
+    page = ui->lineEdit_PageName->text();
 
-void MainWindow::handle_addPage(){};
+ /*   QImage _img;
+    _img.load(imgLocation);
+
+    QString newlocation = "//images//";
+
+    newlocation +=subject;
+    newlocation +=lecture;
+    newlocation +=page;
+    newlocation +=".jpg";
+    _img.save(newlocation);*/
+
+    bool _res = app_db->add_Page(semester, subject, lecture, page, "", imgLocation);
+    if (_res)
+    ui->label_imageLocation->setText("УСПЕШНО ДОБАВЛЕНО!");
+
+    refresh_tree();
+};
 
 void MainWindow::handle_subjDialogOK(){
     bool ok=subj_diag->result(semester, subject);
@@ -209,7 +236,6 @@ void MainWindow::handle_subjDialogOK(){
         refresh_tree();
     };
 };
-
 
 // FOR LECTURE DIALOG
 void MainWindow::handle_lectureDialogOK(){
@@ -225,4 +251,34 @@ void MainWindow::handle_lectureDialogOK(){
 void MainWindow::handle_lectureDialogSemesterPressed(){
      bool ok=lect_diag->result(semester, subject, lecture);
      lect_diag->SetSubjectList(app_db->db_SubjectsList(semester));
+};
+
+// SLOTS FOR PAGE SELECTING
+void MainWindow::downline_SemesterPressed(){
+    semester = ui->comboBox_Semester->currentText();
+
+    QStringList _strList = app_db->db_SubjectsList(semester);
+    ui->comboBox_Subject->clear();
+    ui->comboBox_Subject->addItems(_strList);
+
+    if (!_strList.isEmpty())
+    {
+        subject = _strList.first();
+        _strList = app_db->db_LecturesList(semester, subject);
+        ui->comboBox_Lecture->clear();
+        ui->comboBox_Lecture->addItems(_strList);
+    }
+    else
+    {
+        ui->comboBox_Lecture->clear();
+    };
+};
+
+void MainWindow::downline_SubjectPressed(){
+    semester = ui->comboBox_Semester->currentText();
+    subject = ui->comboBox_Subject->currentText();
+
+    QStringList _strList = app_db->db_LecturesList(semester, subject);
+    ui->comboBox_Lecture->clear();
+    ui->comboBox_Lecture->addItems(_strList);
 };
