@@ -7,6 +7,7 @@
 #include "app_database.h"
 #include "subjectdialog.h"
 #include "lecturedialog.h"
+#include "imageslistviewer.h"
 
 #include <QTreeView>
 #include <QStandardItem>
@@ -30,6 +31,9 @@ void closeEvent(QCloseEvent *event);
 
 private:
     Ui::MainWindow *ui;
+// IMAGE VIEWER
+    imageslistviewer *image_viewer;
+    QList<QImage> *images_selected;
 
 // IMAGE EDITOR
     bool EditorIsOpen;
@@ -81,6 +85,7 @@ private slots:
     void handle_addSemester();
     void handle_addSubject();
     void handle_addLecture();
+    void handleView_Selected();
 
 // SLOTS FOR PAGE SELECTING
     void downline_SemesterPressed();

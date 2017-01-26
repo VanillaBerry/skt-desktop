@@ -13,7 +13,7 @@ public:
     QStandardItemModel* app_db_model();
 
     int getLevel(QString _id);
-
+    bool getImage(QString _id, QString &_imgLOC);
 
 // ADD PROCEDURES
     void add_Semester(QString _parent, QString _title, QString _tags="");

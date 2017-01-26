@@ -35,8 +35,6 @@ QSqlError app_database::databaseInit(){
         _createTable.exec();
      };
 
-
-
     return QSqlError();
 };
 
@@ -388,6 +386,9 @@ QStringList app_database::db_LecturesList(QString _semester, QString _subject){
 bool app_database::add_Page(QString _semester, QString _subject, QString _lecture, QString _title, QString _tags, QString _location){
     bool result=false;
 
+    if (_title.isEmpty()) return result;
+    if (_location.isEmpty()) return result;
+
     QSqlQuery query;
     query.prepare("SELECT * FROM pagebook WHERE title = ? AND level = 1");
     query.bindValue(0, _semester);
@@ -426,7 +427,8 @@ bool app_database::add_Page(QString _semester, QString _subject, QString _lectur
     QString _newID;
     add_Item(lectureID, 4, _title, _tags, _newID);
 
-    add_Image(_newID, _location, _newID);
+    QString _newtag;
+    add_Image(_newID, _location, _newtag);
 
     result=true;
     return result;
@@ -445,10 +447,10 @@ void app_database::add_Image(QString _imageID, QString _imageLOC, QString &_newt
 
     QSqlQuery query;
 
-    query.prepare("INSERT INTO imagelist (id, imageID, imageLocation) VALUES (:id, :imageID; imageLocation);");
-    query.bindValue(":id", id);
-    query.bindValue(":imageID", _imageID);
-    query.bindValue(":imageLocation", _imageLOC);
+    query.prepare("INSERT INTO imagelist (id, imageID, imageLocation) VALUES (?, ?, ?);");
+    query.bindValue(0, id);
+    query.bindValue(1, _imageID);
+    query.bindValue(2, _imageLOC);
     query.exec();
 
     _newtag=id;
@@ -469,6 +471,18 @@ int app_database::getLevel(QString _id){
     return result;
 };
 
+
+bool app_database::getImage(QString _id, QString &_imgLOC){
+    QSqlQuery query;
+
+    query.prepare("SELECT * FROM imagelist"); // WHERE imageID = ?");
+ //   query.bindValue(0, _id);
+    query.exec();
+    _imgLOC = query.value("imageLocation").toString();
+
+    if (!query.next()) return false;
+    return true;
+};
 /*
 QStringList app_database::db_LecturesList();
 QStringList app_database::db_LecturesList(QString _subject);

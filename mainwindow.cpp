@@ -3,6 +3,7 @@
 #include "image_editor.h"
 #include "app_database.h"
 #include "subjectdialog.h"
+#include "imageslistviewer.h"
 
 #include <QAbstractItemView>
 #include <QApplication>
@@ -29,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 // CONNECT TO MENU BUTTONS FILE
     connect(ui->actionExit, SIGNAL (triggered()), this, SLOT (handlebutton_Exit()));
+    connect(ui->actionView_selected, SIGNAL(triggered(bool)), this, SLOT (handleView_Selected()));
 
 // CONNECT TO MENU BUTTONS ADD
     connect(ui->actionA_database, SIGNAL (triggered()), this, SLOT (handleA_database()));
@@ -38,6 +40,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 // CONNECT TO -> BUTTON
     connect(ui->pushButton_addPagesToList, SIGNAL (pressed()), this, SLOT (handle_AddPagesToList()));
+
+// IMAGE VIEWER
+    image_viewer = new imageslistviewer();
+    image_viewer->hide();
 
 // IMAGE EDITOR
     img_edit = new image_editor();
@@ -94,6 +100,8 @@ MainWindow::MainWindow(QWidget *parent) :
     EditorIsOpen=false;
 
     this->handleA_database();
+
+    images_selected = new QList<QImage>;
 }
 
 MainWindow::~MainWindow()
@@ -300,9 +308,28 @@ void MainWindow::handle_AddPagesToList(){
         _newpage[1]->setEditable(false);
 
         list_rootNode->appendRow(_newpage);
-
         ui->label_imageLocation->setText(name+ID);
+
+        QImage _img;
+        QString _imgloc;
+        bool ok = app_db->getImage(ID, _imgloc);
+
+        ui->label_imageLocation->setText(_imgloc);
+        if (ok)
+         {
+            _img.load(_imgloc);
+            images_selected->insert(0,_img);
+            ui->label_imageLocation->setText(_imgloc);
+         };
        };
     };
     // ELSE DO NOTHING
+};
+
+void MainWindow::handleView_Selected(){
+    if (!images_selected->isEmpty())
+    {
+    image_viewer->set_listofIMAGES(images_selected);
+    image_viewer->show();
+    };
 };
