@@ -5,7 +5,11 @@ imageslistviewer::imageslistviewer(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::imageslistviewer)
 {
+    scale=1.0;
+    scale=1.0;
+
     ui->setupUi(this);
+    imagelabel = new QLabel();
     ui->scrollArea_image->setBackgroundRole(QPalette::Dark);
     ui->scrollArea_image->setWidget(imagelabel);
     ui->scrollArea_image->show();
@@ -41,25 +45,30 @@ void imageslistviewer::refresh(){
 
     img_viev=img_viev.scaled(w_pixmap, h_pixmap);
     imagelabel->setPixmap(QPixmap::fromImage(img_viev, Qt::AutoColor));
-
 };
 
 
-void imageslistviewer::set_listofIMAGES(QList<QImage> *_list){
+void imageslistviewer::set_listofIMAGES(QStringList _list){
     _listofIMAGES = _list;
+    scale=1.0;
+    QString str = _listofIMAGES.first();
+    img_old.load(str);
+    refresh();
 };
 
 
 void imageslistviewer::handleButton_PREV(){
-    QImage _img = _listofIMAGES->first();
-    img_old=_img;
+   /* QImage _img;
+    _img=_listofIMAGES->first();
+    img_old = _img;*/
+
     scale=1.0;
     refresh();
 };
 
 void imageslistviewer::handleButton_NEXT(){
-    QImage _img = _listofIMAGES->first();
-    img_old=_img;
+  /*  QImage _img = _listofIMAGES->first();
+    img_old=_img;*/
     scale=1.0;
     refresh();
 };

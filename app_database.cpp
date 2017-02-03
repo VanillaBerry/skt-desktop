@@ -447,7 +447,7 @@ void app_database::add_Image(QString _imageID, QString _imageLOC, QString &_newt
 
     QSqlQuery query;
 
-    query.prepare("INSERT INTO imagelist (id, imageID, imageLocation) VALUES (?, ?, ?);");
+    query.prepare("INSERT INTO imagelist (id, imageID, imageLocation) VALUES (?, ?, ?)");
     query.bindValue(0, id);
     query.bindValue(1, _imageID);
     query.bindValue(2, _imageLOC);
@@ -478,9 +478,12 @@ bool app_database::getImage(QString _id, QString &_imgLOC){
     query.prepare("SELECT * FROM imagelist"); // WHERE imageID = ?");
  //   query.bindValue(0, _id);
     query.exec();
-    _imgLOC = query.value("imageLocation").toString();
 
     if (!query.next()) return false;
+
+    _imgLOC = query.value("imageLocation").toString();
+
+
     return true;
 };
 /*

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QString>
 
 namespace Ui {
 class imageslistviewer;
@@ -15,7 +16,7 @@ class imageslistviewer : public QWidget
 public:
     explicit imageslistviewer(QWidget *parent = 0);
     ~imageslistviewer();
-    void set_listofIMAGES(QList<QImage> *_list);
+    void set_listofIMAGES(QStringList _list);
 
 private:
     QImage img_old;
@@ -24,7 +25,7 @@ private:
     float scale;
     int w_pixmap;
     int h_pixmap;
-    QList<QImage> *_listofIMAGES;
+    QStringList _listofIMAGES;
     void refresh();
 
     Ui::imageslistviewer *ui;

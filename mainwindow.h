@@ -13,6 +13,7 @@
 #include <QStandardItem>
 #include <QStandardItemModel>
 #include <QListView>
+#include <QStringList>
 
 namespace Ui {
 class MainWindow;
@@ -33,7 +34,7 @@ private:
     Ui::MainWindow *ui;
 // IMAGE VIEWER
     imageslistviewer *image_viewer;
-    QList<QImage> *images_selected;
+    QStringList images_selected;
 
 // IMAGE EDITOR
     bool EditorIsOpen;

@@ -101,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->handleA_database();
 
-    images_selected = new QList<QImage>;
+    images_selected;
 }
 
 MainWindow::~MainWindow()
@@ -310,16 +310,18 @@ void MainWindow::handle_AddPagesToList(){
         list_rootNode->appendRow(_newpage);
         ui->label_imageLocation->setText(name+ID);
 
-        QImage _img;
+        //QImage _img;
         QString _imgloc;
         bool ok = app_db->getImage(ID, _imgloc);
 
         ui->label_imageLocation->setText(_imgloc);
+
         if (ok)
          {
-            _img.load(_imgloc);
-            images_selected->insert(0,_img);
-            ui->label_imageLocation->setText(_imgloc);
+            //_img.load(_imgloc);
+            images_selected << _imgloc;
+           // images_selected->insert(0,_img);
+            ui->label_imageLocation->setText(name+" "+ID+" "+_imgloc);
          };
        };
     };
@@ -327,7 +329,7 @@ void MainWindow::handle_AddPagesToList(){
 };
 
 void MainWindow::handleView_Selected(){
-    if (!images_selected->isEmpty())
+    if (!images_selected.isEmpty())
     {
     image_viewer->set_listofIMAGES(images_selected);
     image_viewer->show();
