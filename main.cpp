@@ -1,3 +1,4 @@
+//main.cpp
 #include "mainwindow.h"
 #include <QApplication>
 #include <QLabel>
@@ -5,6 +6,7 @@
 #include "image_editor.h"
 #include <QScrollArea>
 #include <QFileDialog>
+
 
 int main(int argc, char *argv[])
 {
